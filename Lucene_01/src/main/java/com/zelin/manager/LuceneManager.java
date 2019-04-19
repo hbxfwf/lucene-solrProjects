@@ -5,10 +5,13 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.*;
 import org.apache.lucene.index.*;
+import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
+import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
+import org.wltea.analyzer.lucene.IKAnalyzer;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,6 +23,7 @@ import java.io.IOException;
  * @Date: Create in 2019/4/18 10:13
  */
 public class LuceneManager {
+    /*-----------------------------第一部分：对索引库的基本操作------------------------------*/
     //0、添加一个文档到索引库
     public void addIndexOne() throws Exception{
         //1.得到索引库的输出流对象
@@ -50,7 +54,7 @@ public class LuceneManager {
             //4.3)得到文件的各个相关属性（只关注域中用到的）
             String fileName = file.getName();
             String filePath = file.getAbsolutePath();
-            String fileContent = FileUtils.readFileToString(file);
+            String fileContent = FileUtils.readFileToString(file,"utf-8");
             long fileSize = FileUtils.sizeOf(file);
             //4.4)利用上面的内容构造各个域
             //① 定义文件名域
@@ -175,5 +179,126 @@ public class LuceneManager {
         IndexWriterConfig config = new IndexWriterConfig(Version.LATEST,analyzer) ;
         //3.构造输出流对象
         return new IndexWriter(directory,config);
+    }
+    /*-----------------------------第二部分：按照Query的子类进行查询------------------------------*/
+    //1、使用Query的子类MatchAllDocsQuery进行查询：
+    public void queryByMatchAllDocs() throws IOException {
+        //1.得到searcher对象
+        IndexSearcher indexSearcher = getIndexSearcher();
+        //2.得到Query的子类对象
+        Query query = new MatchAllDocsQuery();
+        //3.根据indexSeacher与query进行查询并打印
+        printByQuery(indexSearcher, query);
+        //4.关闭流
+        indexSearcher.getIndexReader().close();
+    }
+    //2.通过Query的子类TermQuery进行查询
+    public void queryByTermQuery() throws Exception{
+        //1.得到searcher对象
+        IndexSearcher indexSearcher = getIndexSearcher();
+        //2.得到TermQuery对象
+        Query termQuery = new TermQuery(new Term("fileContentField","lucene"));
+        //3.查询并打印
+        printByQuery(indexSearcher,termQuery);
+        //4.关闭流
+        indexSearcher.getIndexReader().close();
+    }
+    //3.通过Query的子类NumericRangeQuery完成指定数值范围的查询
+    public void queryByNumericRangeQuery () throws Exception{
+        //1.得到searcher对象
+        IndexSearcher indexSearcher = getIndexSearcher();
+        //2.得到TermQuery对象
+        //参数说明：
+        //① 代表要查询的字段（域名）
+        //② 代表查询的开始值（最小值）
+        //③ 代表查询的结束值（最大值）
+        //④ 代表查询是否包含开始值
+        //⑤ 代表查询是否包含结束值
+        Query numericRangeQuery = NumericRangeQuery.newLongRange("fileSizeField",0L,100L,true,true);
+        //3.查询并打印
+        printByQuery(indexSearcher,numericRangeQuery);
+        //4.关闭流
+        indexSearcher.getIndexReader().close();
+    }
+    //4.使用BooleanQuery进行组合条件查询
+    //需求：查询0-100字节并且内容之中包含有spring的的文档信息
+    public void queryByBooleanQuery() throws Exception{
+        //1.得到searcher对象
+        IndexSearcher indexSearcher = getIndexSearcher();
+        //2.定义查询条件
+        Query termQuery = new TermQuery(new Term("fileContentField","web"));
+        Query numericRangeQuery = NumericRangeQuery.newLongRange("fileSizeField",0L,100L,true,true);
+        //3.定义BooleanQuery用于组合上面两个条件
+        BooleanQuery booleanQuery = new BooleanQuery();
+        booleanQuery.add(termQuery, BooleanClause.Occur.SHOULD);        //BooleanClause.Occur.SHOULD：相当于or
+        booleanQuery.add(numericRangeQuery, BooleanClause.Occur.MUST); //BooleanClause.Occur.MUST: 相当于and
+        //4.开始查询并打印
+        printByQuery(indexSearcher,booleanQuery);
+        //5.关闭流
+        indexSearcher.getIndexReader().close();
+    }
+    //通过传入indexSearcher与query子类的对象进行打印输出查询到的结果
+    private void printByQuery(IndexSearcher indexSearcher, Query query) throws IOException {
+        //1.使用searcher进行查询
+        TopDocs topDocs = indexSearcher.search(query, 10);
+        //2.遍历上面的查询结果
+        for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
+            //2.1)得到文档的id
+            int id = scoreDoc.doc;
+            //2.2)根据文档id得到文档对象
+            Document document = indexSearcher.doc(id);
+            //2.3)打印文档对象
+            printDoc(document);
+        }
+    }
+
+    /*-----------------------------第三部分：使用queryParser进行查询------------------------------*/
+    //1.通过queryParser进行查询
+    public void findDocsByQueryParser() throws Exception{
+        //1.得到searcher对象
+        IndexSearcher indexSearcher = getIndexSearcher();
+        //2.构造查询分析器对象queryParser
+        //参数说明：
+        //① 代表要查询的字段名（域名）
+        //② 代表分词器
+        QueryParser queryParser = new QueryParser("fileContentField",new IKAnalyzer());
+        //3.根据上面的查询分析器对象分析得到一个Query对象
+        //说明：分词结果为：java lucene,即将来查询fileContentField这个域中含有java与lucene的文档
+        Query query = queryParser.parse("java is lucene");
+        //4.打印并输出
+        printByQuery(indexSearcher,query);
+        //5.关闭流
+        indexSearcher.getIndexReader().close();
+    }
+    //2.通过queryParser进行查询(使用简易语法)
+    public void findDocsByQueryParser2() throws Exception{
+        //1.得到searcher对象
+        IndexSearcher indexSearcher = getIndexSearcher();
+        //2.构造查询分析器对象queryParser
+        //参数说明：
+        //① 代表要查询的字段名（域名）
+        //② 代表分词器
+        QueryParser queryParser = new QueryParser("fileContentField",new IKAnalyzer());
+        //3.通过简易语法在查询分析器中指定查询条件
+        Query query = queryParser.parse("fileNameField:java +fileContentField:lucene");
+        //4.打印并输出
+        printByQuery(indexSearcher,query);
+        //5.关闭流
+        indexSearcher.getIndexReader().close();
+    }
+
+    public void findDocsByMultiFieldQueryParser() throws Exception{
+        //1.得到searcher对象
+        IndexSearcher indexSearcher = getIndexSearcher();
+        //2.定义要分析的多域字段
+        String[] fields = {"fileNameField","fileContentField"};
+        //3.创建查询分析器
+        QueryParser queryParser = new MultiFieldQueryParser(fields,new IKAnalyzer());
+        //4.通过查询分析器得到查询对象
+        Query query = queryParser.parse("java is lucene");
+        //5.进行多域查询
+        printByQuery(indexSearcher,query);
+        //6.关闭流
+        indexSearcher.getIndexReader().close();
     }
 }

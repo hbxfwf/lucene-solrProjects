@@ -4,6 +4,8 @@ import com.zelin.manager.LuceneManager;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
+
 /**
  * @Author: Feng.Wang
  * @Company: Zelin.ShenZhen
@@ -50,5 +52,40 @@ public class TestLuceneManager {
     public void testDeleteAll() throws Exception{
         luceneManager.deleteAll();
         System.out.println("整个索引库删除成功！");
+    }
+    //测试MatchAllDocsQuery对象
+    @Test
+    public void testQueryByMatchAllDocs() throws IOException {
+        luceneManager.queryByMatchAllDocs();
+    }
+    //测试TermQuery对象
+    @Test
+    public void testTermQuery() throws Exception{
+        luceneManager.queryByTermQuery();
+    }
+    //测试NumericRangeQuery对象
+    @Test
+    public void testQueryByNumericRangeQuery() throws Exception {
+        luceneManager.queryByNumericRangeQuery();
+    }
+    //测试BooleanQuery对象
+    @Test
+    public void testQueryByBooleanQuery() throws  Exception{
+        luceneManager.queryByBooleanQuery();
+    }
+    //测试查询分析器
+    @Test
+    public void testFindDocsByQueryParser() throws  Exception{
+        luceneManager.findDocsByQueryParser();
+    }
+    //测试查询分析器(使用简易语法进行查询)
+    @Test
+    public void testFindDocsByQueryParser2() throws  Exception{
+        luceneManager.findDocsByQueryParser2();
+    }
+    //测试多域查询
+    @Test
+    public void testFindDocsByMultiFieldQueryParser() throws Exception{
+        luceneManager.findDocsByMultiFieldQueryParser();
     }
 }
