@@ -55,8 +55,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Solr_01/src/main/java/com/zelin/manager/SolrManager.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="292">
-              <caret line="139" column="5" lean-forward="true" selection-start-line="91" selection-start-column="3" selection-end-line="139" selection-end-column="5" />
+            <state relative-caret-position="6">
+              <caret line="89" column="5" lean-forward="true" selection-start-line="52" selection-start-column="4" selection-end-line="89" selection-end-column="5" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -210,7 +210,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1555648443718" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1555648597313" />
     <property name="extract.method.default.visibility" value="private" />
     <property name="jdk.selected.JAVA_MODULE" value="1.7" />
     <property name="last_opened_file_path" value="E:/apache-tomcat-7.0.40/lib/tomcat-util.jar!/" />
@@ -341,7 +341,7 @@
       <option name="presentableId" value="Default" />
       <updated>1555549904049</updated>
       <workItem from="1555549906850" duration="10810000" />
-      <workItem from="1555632560898" duration="12519000" />
+      <workItem from="1555632560898" duration="12846000" />
     </task>
     <servers />
   </component>
@@ -378,11 +378,10 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="23329000" />
+    <option name="totallyTimeSpent" value="23656000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-4" y="-4" width="1374" height="732" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" weight="0.14652568" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -394,11 +393,11 @@
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.6988156" />
-      <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.23857868" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.8849408" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Terminal" order="7" weight="0.21827412" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="7" visible="true" weight="0.42639595" />
       <window_info anchor="bottom" id="Docker" order="8" show_stripe_button="false" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
       <window_info anchor="bottom" id="Messages" order="10" weight="0.32994923" />
@@ -733,8 +732,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Solr_01/src/main/java/com/zelin/manager/SolrManager.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="292">
-          <caret line="139" column="5" lean-forward="true" selection-start-line="91" selection-start-column="3" selection-end-line="139" selection-end-column="5" />
+        <state relative-caret-position="6">
+          <caret line="89" column="5" lean-forward="true" selection-start-line="52" selection-start-column="4" selection-end-line="89" selection-end-column="5" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
