@@ -5,6 +5,7 @@ import org.apache.solr.client.solrj.SolrRequest;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
+import org.apache.solr.client.solrj.response.GroupResponse;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
@@ -69,7 +70,9 @@ public class SolrManager {
         System.out.println("一共查询出" + total + "条记录！");
         //7.打印查询内容
         for (SolrDocument doc : results) {
+            System.out.println("-----------------------------------------------------------------");
             showInfo(doc);
+            System.out.println("-----------------------------------------------------------------");
         }
         //8.提交查询
         solrServer.commit();
@@ -86,7 +89,7 @@ public class SolrManager {
         System.out.println("product_price:" + product_price);
         System.out.println("product_category_name:" + product_category_name);
         System.out.println("product_picture:" + product_picture);
-        System.out.println("-----------------------------------------------------------------");
+
     }
 
     //进行复杂查询
@@ -96,7 +99,7 @@ public class SolrManager {
         //2.定义SolrParams查询参数
         SolrQuery params = new SolrQuery();
         //3.向查询参数中添加查询条件
-        params.set("q","浪漫");          //添加查询
+        params.set("q","浪漫");          //添加查询，此时没有指定要查询的字段名，就使用默认查询字段进行查询
         //4.设置默认查询字段
         params.set("df","product_name","product_catalog_name");
         //5.设置查询的字段列表
@@ -116,24 +119,31 @@ public class SolrManager {
         //9.设置开始分页
         params.setStart(0);                             //从第0条记录开始查询
         params.setRows(10);                             //每次显示10条
+
         //10.开始查询
         QueryResponse queryResponse = solrServer.query(params);
         //11.得到查询结果
         SolrDocumentList results = queryResponse.getResults();
         //12.得到高亮查询结果
         Map<String, Map<String, List<String>>> highlighting = queryResponse.getHighlighting();
+
         //13.遍历查询结果
         for (SolrDocument doc : results) {
+            System.out.println("---------------------------------------------------------------------");
             //① 打印文档信息
-           showInfo(doc);
+            showInfo(doc);
            //② 根据文档id得到某条高亮数据
             Map<String, List<String>> maps = highlighting.get(doc.get("id").toString());
             //③ 根据存放到高亮中的字段取出此字段的内容
             List<String> list = maps.get("product_name");
             //④ 打印取出的数据
+            System.out.println("●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●");
             if(list != null && list.size() > 0){
-                System.out.println("商品名称[高亮]:" + list.get(0));
+                System.out.println("商品名称[高亮]:");
+                System.out.println(list.get(0));
             }
+            System.out.println("●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●");
+            System.out.println("---------------------------------------------------------------------");
         }
         //14.提交查询
         solrServer.commit();

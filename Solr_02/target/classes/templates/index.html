@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>第一个模板页面</title>
+    <!--1.引入bootsrap的样式-->
+    <link rel="stylesheet" href="webjars/bootstrap/3.3.7/css/bootstrap.min.css"
+          th:href="@{webjars/bootstrap/3.3.7/css/bootstrap.min.css}">
+    <!--2.引入jquery的库-->
+    <script src="webjars/jquery/3.3.1/jquery.js" th:src="@{webjars/jquery/3.3.1/jquery.js}"></script>
+    <!--3.引入bootstrap的库-->
+    <script src="webjars/bootstrap/3.3.7/js/bootstrap.min.js"
+            th:src="@{webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+</head>
+<body>
+<h2 th:text="${name}"></h2> <br>
+<div class="container">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <div class="panel-title">
+                <h3>商品信息如下</h3>
+            </div>
+        </div>
+        <div class="panel-body">
+            <table class="table">
+                <tr>
+                    <td>商品编号</td>
+                    <td>商品名称</td>
+                    <td>商品分类</td>
+                    <td>商品价格</td>
+                    <td>总数量</td>
+                    <td>图片</td>
+                    <td>操作</td>
+
+                </tr>
+                <tr th:each="p : ${productList}">
+                    <td th:text="${p.pid}"></td>
+                    <td th:text="${p.name}"></td>
+                    <td th:text="${p.catelog_name}"></td>
+                    <td th:text="${p.price}"></td>
+                    <td th:text="${p.number}"></td>
+                    <td th:text="${p.picture}"></td>
+                    <td>
+                        <a href="#" class="btn btn-success btn-sm">修改</a>
+                        <a href="#" class="btn btn-danger btn-sm">删除</a>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>
